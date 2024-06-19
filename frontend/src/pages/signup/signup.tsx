@@ -1,4 +1,4 @@
-import { useAuth } from '@shared/hooks/use-auth.hook';
+import { useAuth } from '@shared/hooks/use-auth';
 import { Formik, FormikHelpers } from 'formik';
 import { ReactElement } from 'react';
 import { Link } from 'react-router-dom';
@@ -11,7 +11,10 @@ interface IFormValues {
 const Signup = (): ReactElement => {
   const { signup } = useAuth();
 
-  const onSubmit = async ({ email, password }: IFormValues, { setSubmitting }: FormikHelpers<IFormValues>): Promise<void> => {
+  const onSubmit = async ({
+    email,
+    password
+  }: IFormValues, { setSubmitting }: FormikHelpers<IFormValues>): Promise<void> => {
     await signup(email, password);
 
     setSubmitting(false);
