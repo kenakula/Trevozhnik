@@ -11,8 +11,8 @@ import { cookieParser } from './middlewares.js';
 process.env = { ...process.env, ...loadEnv(process.env.NODE_ENV, process.cwd()) };
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const PORT = process.env.PORT || 5173;
-const BASE_URL = process.env.BASE || '/';
+const PORT = process.env.VITE_PORT || 5173;
+const BASE_URL = process.env.VITE_BASE || '/';
 const PUBLIC_URLS = ['login', 'signup', '500', '404'];
 const LOGIN_URL = '/auth/login';
 const LOGOUT_URL = '/auth/logout';
@@ -30,6 +30,7 @@ const templateHtml = IS_PRODUCTION
 
 
 const app = express();
+
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookieParser);
@@ -87,7 +88,7 @@ app.use('*', async (req, res) => {
         const shouldRedirectToLogin = !session && !PUBLIC_URLS.includes(url) && req.originalUrl !== '/';
 
         if (shouldRedirectToLogin) {
-            console.error(`INFO ${new Date().toLocaleString()}: Private page. Redirecting to login page`);
+            console.error(`ERROR ${new Date().toLocaleString()}: Private page. Redirecting to login page`);
             return res.status(302).redirect('/login');
         }
 
