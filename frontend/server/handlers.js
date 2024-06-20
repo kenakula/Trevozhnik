@@ -1,7 +1,7 @@
 import { Account, Client, ID } from 'node-appwrite';
 
 export const userHandler = async (req, res) => {
-    const session = req.cookies.session;
+    const session = req.cookies?.session;
 
     if (!session) {
         return res.status(401).json({ success: false, error: 'Unauthorized' });
@@ -39,12 +39,26 @@ export const signupHandler = async (req, res) => {
     const account = new Account(client);
 
     try {
-        await account.create(ID.unique(), email, password);
-        await loginHandler(req, res);
+        const user = await account.create(ID.unique(), email, password);
+        res.status(201).json({ success: true, user });
     } catch (err) {
         console.error(err);
         res.status(400).json({ success: false, error: err.message });
     }
+};
+
+export const logoutHandler = async (req, res) => {
+    const session = req.cookies?.['session'];
+
+    if (!session) {
+        return res.status(401).json({ success: false, error: 'Unauthorized' });
+    }
+
+    res.cookie('session', session.secret, {
+        expires: new Date(Date.now() - 1000),
+    });
+
+    return res.status(200).json({ success: true });
 };
 
 export const loginHandler = async (req, res) => {
@@ -74,7 +88,7 @@ export const loginHandler = async (req, res) => {
 
         res.status(200).json({ success: true });
     } catch (err) {
-        console.log('=>(handlers.js:55) err', err);
+        console.error('=>(handlers.js:55) err', err);
         res.status(400).json({ success: false, error: err.message });
     }
 };

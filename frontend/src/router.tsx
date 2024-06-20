@@ -12,7 +12,15 @@ export const routes: RouteObject[] = [
         path: 'dashboard',
         lazy: () => import('@pages/dashboard')
       },
+      {
+        path: 'profile',
+        lazy: () => import('@pages/profile')
+      },
     ]
+  },
+  {
+    index: true,
+    lazy: () => import('@pages/home')
   },
   {
     path: 'login',
@@ -21,10 +29,6 @@ export const routes: RouteObject[] = [
   {
     path: 'signup',
     lazy: () => import('@pages/signup')
-  },
-  {
-    index: true,
-    lazy: () => import('@pages/home')
   },
 ];
 

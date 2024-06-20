@@ -31,6 +31,8 @@ const Signup = (): ReactElement => {
           <input type="password" onChange={handleChange} value={values.password} name="password"/>
           <button type="submit" disabled={isSubmitting}>submit</button>
           <Link to="/login">login</Link>
+          {' '}
+          <Link to="/dashboard">dashboard</Link>
         </form>
       )}
 

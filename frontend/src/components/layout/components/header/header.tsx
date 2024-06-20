@@ -1,12 +1,18 @@
 import { useAuth } from '@shared/hooks/use-auth';
 import { ReactElement } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const Header = (): ReactElement => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async (): Promise<void> => {
-    await logout();
+    try {
+      await logout();
+      navigate('/login');
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -18,6 +24,8 @@ export const Header = (): ReactElement => {
       <Link to="/login">login</Link>
       {' '}
       <Link to="/signup">signup</Link>
+      {' '}
+      <Link to="/profile">profile</Link>
 
       <br/>
 

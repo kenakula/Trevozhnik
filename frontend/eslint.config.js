@@ -27,6 +27,7 @@ export default [
             'max-len': ['error', { code: 124 }],
             'no-console': ['warn', { allow: ['error'] }],
             'object-curly-spacing': ['warn', 'always'],
+            'no-undef': 'off',
         },
     }
 ];

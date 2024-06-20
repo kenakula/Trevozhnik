@@ -1,7 +1,7 @@
 import { useAuth } from '@shared/hooks/use-auth';
 import { Formik, FormikHelpers } from 'formik';
 import { ReactElement } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface IFormValues {
   email: string;
@@ -10,13 +10,20 @@ interface IFormValues {
 
 const Login = (): ReactElement => {
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const onSubmit = async ({
     email,
     password
   }: IFormValues, { setSubmitting }: FormikHelpers<IFormValues>): Promise<void> => {
-    await login(email, password);
-    setSubmitting(false);
+    try {
+      await login(email, password);
+      navigate('/dashboard');
+    } catch (err) {
+      console.error('ERROR: login page: ', err);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const initialValues: IFormValues = { email: '', password: '' };
@@ -30,6 +37,8 @@ const Login = (): ReactElement => {
           <input type="password" onChange={handleChange} value={values.password} name="password"/>
           <button type="submit" disabled={isSubmitting}>submit</button>
           <Link to="/signup">signup</Link>
+          {' '}
+          <Link to="/dashboard">dashboard</Link>
         </form>
       )}
     </Formik>

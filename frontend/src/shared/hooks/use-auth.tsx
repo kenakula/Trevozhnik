@@ -1,47 +1,31 @@
+import { authApi } from '@api/auth-api';
+import { IUser } from '@shared/interfaces';
 import { createContext, PropsWithChildren, useContext, useMemo, useState } from 'react';
 
 interface IUseAuthContext {
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  getUser: () => Promise<any>;
-  user: any;
+  getUser: () => Promise<IUser | null>;
+  user: IUser | null;
 }
 
 const UseAuthContext = createContext<IUseAuthContext>({} as IUseAuthContext);
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<IUser | null>(null);
 
-  const login = async (email: string, password: string): Promise<any | null> => {
+  const login = async (email: string, password: string): Promise<void> => {
     try {
-      const user = await fetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      setUser(user);
-
-      return user;
+      await authApi.login(email, password);
     } catch (error) {
       console.error(error);
     }
-
-    return null;
   };
 
   const signup = async (email: string, password: string): Promise<void> => {
     try {
-      const user = await fetch('/auth/signup', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      const user = await authApi.signup(email, password);
 
       setUser(user);
     } catch (err) {
@@ -51,18 +35,26 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   };
 
   const logout = async (): Promise<void> => {
-    console.log('logged out');
+    try {
+      await authApi.logout();
+
+      setUser(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const getUser = async (): Promise<any> => {
+  const getUser = async (): Promise<IUser | null> => {
     try {
-      const data = await fetch('/auth/user').then(res => res.json());
-      setUser(data.user);
+      const user = await authApi.getUser();
+      setUser(user);
 
-      return data.user;
+      return user;
     } catch (error) {
       setUser(null);
     }
+
+    return null;
   };
 
   const value: IUseAuthContext = useMemo(() => ({

@@ -7,7 +7,7 @@ import { Header } from './components/header';
 
 export const Layout = (): ReactElement => {
   const authChecked = useRef<boolean>(false);
-  const { user, getUser } = useAuth();
+  const { getUser } = useAuth();
 
   const navigate = useNavigate();
 
@@ -29,7 +29,6 @@ export const Layout = (): ReactElement => {
   return (
     <>
       <Header/>
-      <p>{JSON.stringify(user)}</p>
       <main>
         <Outlet/>
       </main>
