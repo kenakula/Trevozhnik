@@ -6,7 +6,7 @@ import { Account, Client } from 'node-appwrite';
 import { loadEnv } from 'vite';
 
 import { loginHandler, logoutHandler, signupHandler, userHandler } from './handlers.js';
-import { cookieParser } from './middlewares.js';
+import { cookieParser } from './middlewares/cookie-parser.middleware.js';
 
 process.env = { ...process.env, ...loadEnv(process.env.NODE_ENV, process.cwd()) };
 
@@ -85,7 +85,8 @@ app.use('*', async (req, res) => {
 
         const session = req.cookies?.['session'];
 
-        const shouldRedirectToLogin = !session && !PUBLIC_URLS.includes(url) && req.originalUrl !== '/';
+        const shouldRedirectToLogin =
+            !session && req.originalUrl !== '/login' && !PUBLIC_URLS.includes(url) && req.originalUrl !== '/';
 
         if (shouldRedirectToLogin) {
             console.error(`ERROR ${new Date().toLocaleString()}: Private page. Redirecting to login page`);

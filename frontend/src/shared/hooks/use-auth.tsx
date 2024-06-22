@@ -20,6 +20,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       await authApi.login(email, password);
     } catch (error) {
       console.error(error);
+      throw new Error('Invalid credentials');
     }
   };
 
