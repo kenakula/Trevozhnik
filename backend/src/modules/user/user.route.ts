@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { getAllUsersHandler, registerUserHandler } from './user.controller';
+
+import { getAllUsersHandler, loginHandler, registerUserHandler } from './user.controller';
 import { $ref } from './user.schema';
 
 export const userRoutes = async (server: FastifyInstance) => {
@@ -12,11 +13,18 @@ export const userRoutes = async (server: FastifyInstance) => {
     }
   }, registerUserHandler);
 
-  server.get('/', {
+  server.post('/login', {
     schema: {
+      body: $ref('loginSchema'),
       response: {
-        200: $ref('getAllUsersResponseSchema')
+        200: $ref('loginResponseSchema')
       }
     }
+  }, loginHandler);
+
+
+
+  server.get('/', {
+    preHandler: [server.auth]
   }, getAllUsersHandler);
 };

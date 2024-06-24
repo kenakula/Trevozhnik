@@ -1,5 +1,5 @@
-import {z} from 'zod';
-import {buildJsonSchemas} from 'fastify-zod';
+import { buildJsonSchemas } from 'fastify-zod';
+import { z } from 'zod';
 
 const userCore = {
   email: z.string({
@@ -7,7 +7,7 @@ const userCore = {
     invalid_type_error: 'Email must be a string',
   }).email(),
   name: z.string(),
-}
+};
 
 const createUserScheme = z.object({
   ...userCore,
@@ -20,14 +20,32 @@ const createUserScheme = z.object({
 const createUserResponseSchema = z.object({
   id: z.number(),
   ...userCore,
-})
+});
 
 const getAllUsersResponseSchema = z.array(createUserResponseSchema);
 
-export type CreateUserInput = z.infer<typeof createUserScheme>
+const loginSchema = z.object({
+  email: z.string({
+    required_error: 'Email is required',
+    invalid_type_error: 'Email must be a string',
+  }).email(),
+  password: z.string({
+    required_error: 'Password is required',
+    invalid_type_error: 'Password must be a string',
+  }),
+});
 
-export const {schemas: userSchemas, $ref} = buildJsonSchemas({
+const loginResponseSchema = z.object({
+  accessToken: z.string(),
+});
+
+export type TCreateUserInput = z.infer<typeof createUserScheme>;
+export type TLoginInput = z.infer<typeof loginSchema>;
+
+export const { schemas: userSchemas, $ref } = buildJsonSchemas({
+  loginSchema,
   createUserScheme,
+  loginResponseSchema,
   createUserResponseSchema,
   getAllUsersResponseSchema
-})
+}, { $id: 'UserSchema' });
