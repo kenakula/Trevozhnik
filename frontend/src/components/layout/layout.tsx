@@ -7,7 +7,6 @@ import { Header } from './components/header';
 
 export const Layout = (): ReactElement => {
   const { getUser } = useAuth();
-  const pathname = window.location.pathname;
 
   const navigate = useNavigate();
 
@@ -21,7 +20,7 @@ export const Layout = (): ReactElement => {
 
   useEffect(() => {
     checkAuth();
-  }, [pathname]);
+  }, []);
 
   return (
     <>
